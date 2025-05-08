@@ -1,15 +1,15 @@
+import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, ScrollView, FlatList } from 'react-native';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { COLORS, FONTS, SIZES } from './theme.js'; // Assuming theme.js exists and is configured
-import SupportChat from '../components/SupportChat';
+import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
+import SupportChat from '../components/SupportChat';
+import { COLORS, FONTS, SIZES } from './theme.js'; // Assuming theme.js exists and is configured
 
 // Sample data for the chart
 const usageData = {
   labels: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو"],
   datasets: [
-    {
+    { 
       data: [20, 45, 28, 80, 99, 43],
       color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
       strokeWidth: 2 // optional
