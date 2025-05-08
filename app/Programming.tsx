@@ -1,35 +1,35 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView, 
-  Modal, 
-  ActivityIndicator, 
-  FlatList, 
-  I18nManager, 
-  Alert,
-  Dimensions,
-  SafeAreaView,
-  Platform,
-  Animated,
-  PanResponder,
-  Keyboard,
-  TouchableWithoutFeedback,
-  LayoutAnimation,
-  UIManager,
-  KeyboardAvoidingView
-} from 'react-native';
-import * as FileSystem from 'expo-file-system';
-import { StatusBar } from 'expo-status-bar';
-import * as Haptics from 'expo-haptics';
-import * as DocumentPicker from 'expo-document-picker';
+import { Feather, FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
-import { COLORS, FONTS } from '../src/theme';
-import { FontAwesome, MaterialIcons, Ionicons, Feather } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
+import * as Haptics from 'expo-haptics';
+import { StatusBar } from 'expo-status-bar';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Animated,
+  Dimensions,
+  FlatList,
+  I18nManager,
+  Keyboard,
+  KeyboardAvoidingView,
+  LayoutAnimation,
+  Modal,
+  PanResponder,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  UIManager,
+  View
+} from 'react-native';
 import { GROQ_API_KEY, GROQ_API_URL, GROQ_MODEL } from '../src/config';
+import { COLORS, FONTS } from '../src/theme';
 
 // Enable layout animation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -1666,7 +1666,7 @@ export default App;`,
                   styles.lineNumber,
                   { 
                     color: theme === 'dark' ? EDITOR_THEME.lineNumber : '#999',
-                    fontSize: fontSize,
+                    fontSize: 10,
                     lineHeight: fontSize * 1.5,
                     textAlign: 'right',
                     width: '100%',
@@ -1694,8 +1694,12 @@ export default App;`,
                 color: theme === 'dark' ? EDITOR_THEME.text : '#000000',
                 fontSize: fontSize,
                 lineHeight: fontSize * 1.5,
-                paddingLeft: showLineNumbers ? 2 : 6, // <-- تصغير البادينج هنا
-                minHeight: fontSize * 1.5 * lineCount + 24,
+                paddingLeft: 12,
+                paddingRight: 12,
+                paddingTop: 12,
+                paddingBottom: 12,
+                minHeight: fontSize * 1.5 * Math.max(lineCount, 16) + 48, // أكبر بكثير
+                borderRadius: 4,
               }
             ]}
             value={currentCode}
@@ -1723,7 +1727,7 @@ export default App;`,
       <SafeAreaView style={[styles.container, { backgroundColor: theme === 'dark' ? '#1e1e1e' : '#f8f9fa' }]}>
         <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
         
-        <View style={[styles.header, { backgroundColor: theme === 'dark' ? '#252526' : '#3f51b5' }]}>
+        <View style={[styles.header, { backgroundColor: theme === 'dark' ? '#252526' : '#4a5af8' }]}>
           <TouchableOpacity 
             style={styles.headerButton}
             onPress={() => setFileBrowserVisible(!fileBrowserVisible)}
@@ -1807,7 +1811,7 @@ export default App;`,
               backgroundColor: theme === 'dark' ? EDITOR_THEME.background : '#ffffff'
             }]}
           >
-            <View style={[styles.editorHeader, { backgroundColor: theme === 'dark' ? '#2d2d2d' : '#f0f0f0' }]}>
+            <View style={[styles.editorHeader, { backgroundColor: theme === 'dark' ? '#2d2d2d' : '#f5f7fa' }]}>
               <View style={styles.editorHeaderFileInfo}>
                 <Text style={[styles.editorHeaderText, { color: theme === 'dark' ? '#e0e0e0' : '#333' }]}>
                   {currentFile ? currentFile.name : 'محرر الكود'}
@@ -1836,11 +1840,14 @@ export default App;`,
               backgroundColor: theme === 'dark' ? '#252526' : '#f5f5f5'
             }]}>
               <View style={styles.assistantHeader}>
-                <Text style={[styles.panelTitle, { color: theme === 'dark' ? '#e0e0e0' : '#673ab7' }]}>
+                <Text style={[styles.panelTitle, { color: theme === 'dark' ? '#e0e0e0' : '#4a5af8' }]}>
                   المساعد الذكي
                 </Text>
-                <TouchableOpacity onPress={() => setAssistantVisible(false)}>
-                  <Feather name="minimize-2" size={18} color={theme === 'dark' ? '#e0e0e0' : '#666'} />
+                <TouchableOpacity 
+                  style={[styles.headerButton, { backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(74,90,248,0.1)' }]}
+                  onPress={() => setAssistantVisible(false)}
+                >
+                  <Feather name="minimize-2" size={18} color={theme === 'dark' ? '#e0e0e0' : '#4a5af8'} />
                 </TouchableOpacity>
               </View>
               <FlatList
@@ -1855,7 +1862,17 @@ export default App;`,
                 windowSize={10}
               />
               {isLoadingAI && <ActivityIndicator size="small" color="#3f51b5" style={styles.loadingIndicator} />}
-              <View style={[styles.inputRow, { backgroundColor: theme === 'dark' ? '#23272f' : '#f3f6fa', borderWidth: 1, borderColor: theme === 'dark' ? '#444' : '#d0d7de', borderRadius: 24, shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 8, shadowOffset: { width: 0, height: 2 } }]}>
+              <View style={[styles.inputRow, { 
+                backgroundColor: theme === 'dark' ? '#23272f' : '#f3f6fa', 
+                borderWidth: 1, 
+                borderColor: theme === 'dark' ? '#444' : '#d0d7de', 
+                borderRadius: 24, 
+                shadowColor: '#000', 
+                shadowOpacity: 0.08, 
+                shadowRadius: 8, 
+                shadowOffset: { width: 0, height: 2 },
+                marginVertical: 12
+              }]}>
                 <TextInput
                   ref={assistantInputRef}
                   style={[
@@ -1897,7 +1914,11 @@ export default App;`,
                   </TouchableOpacity>
                 )}
                 <TouchableOpacity 
-                  style={[styles.sendButton, !assistantInput.trim() && styles.sendButtonDisabled]}
+                  style={[
+                    styles.sendButton, 
+                    !assistantInput.trim() && styles.sendButtonDisabled,
+                    { transform: [{ rotate: I18nManager.isRTL ? '0deg' : '180deg' }] }
+                  ]}
                   onPress={() => handleSendMessage()}
                   disabled={isLoadingAI || !assistantInput.trim()}
                 >
@@ -1913,7 +1934,10 @@ export default App;`,
                 <Text style={[styles.outputTitle, { color: theme === 'dark' ? '#e0e0e0' : '#333' }]}>
                   المخرجات
                 </Text>
-                <TouchableOpacity onPress={hideOutputPanel}>
+                <TouchableOpacity 
+                  style={[styles.headerButton, { backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }]}
+                  onPress={hideOutputPanel}
+                >
                   <MaterialIcons name="close" size={20} color={theme === 'dark' ? '#e0e0e0' : '#333'} />
                 </TouchableOpacity>
               </View>
@@ -1927,6 +1951,58 @@ export default App;`,
         </View>
 
         {renderSettingsModal()}
+        
+        {/* Quick Action Floating Buttons */}
+        {!showSettingsModal && !fileBrowserVisible && (
+          <View style={{
+            position: 'absolute',
+            bottom: 80, // رفع الأزرار للأعلى أكثر (كان 44)
+            right: 20,
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 12,
+            zIndex: 999,
+          }}>
+            {/* Run Button */}
+            <TouchableOpacity
+              style={{
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: theme === 'dark' ? '#4a5af8' : '#4a5af8',
+                justifyContent: 'center',
+                alignItems: 'center',
+                elevation: 5,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 3,
+              }}
+              onPress={handleRunCode}
+            >
+              <Feather name="play" size={24} color="#fff" />
+            </TouchableOpacity>
+            {/* Save Button */}
+            <TouchableOpacity
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 25,
+                backgroundColor: theme === 'dark' ? '#38a169' : '#38a169',
+                justifyContent: 'center',
+                alignItems: 'center',
+                elevation: 5,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3,
+                shadowRadius: 3,
+              }}
+              onPress={handleAISave}
+            >
+              <Feather name="save" size={22} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
@@ -1940,7 +2016,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 56,
+    height: 60,
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
@@ -1950,6 +2026,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
+    zIndex: 10,
   },
   headerText: {
     ...FONTS.h3,
@@ -1957,22 +2034,33 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   headerButton: {
-    padding: 10,
-    borderRadius: 8,
+    padding: 12,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    marginHorizontal: 4,
   },
   editorContainer: {
     borderBottomWidth: 1,
     borderBottomColor: '#333',
+    borderRadius: 12,
+    margin: 8,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   editorHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
@@ -1982,34 +2070,40 @@ const styles = StyleSheet.create({
   },
   editorHeaderText: {
     ...FONTS.body3,
-    marginRight: 8,
+    marginRight: 10,
+    fontWeight: '600',
   },
   editorLanguageLabel: {
     fontSize: 12,
-    color: '#999',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
-    backgroundColor: '#3a3a3a',
+    color: '#fff',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 12,
+    backgroundColor: '#4a5568',
+    overflow: 'hidden',
   },
   editorHeaderControls: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
   editorHeaderButton: {
-    padding: 8,
-    borderRadius: 4,
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
   editorArea: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'stretch',
+    flex: 1,
+    minHeight: 220, // اجعل الحد الأدنى أكبر بكثير
+    maxHeight: 600, // حتى في الهواتف
   },
   lineNumbersContainer: {
-    width: 28,
+    width: 32,
     flexShrink: 0,
     paddingVertical: 12,
-    paddingRight: 2,
+    paddingRight: 0,
     borderRightWidth: 1,
     minHeight: '50%',
     backgroundColor: '#2d2d2d',
@@ -2017,41 +2111,52 @@ const styles = StyleSheet.create({
   lineNumber: {
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     textAlign: 'right',
-    width: '50%',
+    width: '100%',
     paddingRight: 2,
     opacity: 0.7,
     includeFontPadding: false,
+    fontSize: 10,
+    // lineHeight is set dynamically
   },
   editorScrollArea: {
-    flex: 1, // يأخذ كل المساحة المتبقية
+    flex: 1,
     minWidth: 0,
+    flexShrink: 1,
+    width: '100%',
+    minHeight: 220, // أكبر من السابق
   },
   editorInput: {
     flex: 1,
-    padding: 12,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     textAlignVertical: 'top',
     minWidth: 0,
+    width: '100%',
+    // باقي الخصائص تُعدل ديناميكياً
   },
   panelDivider: {
     position: 'absolute',
     left: 0,
     right: 0,
-    height: 16,
+    height: 24,
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 10,
     backgroundColor: '#333',
   },
   dragHandle: {
-    width: 40,
+    width: 60,
     height: 5,
-    borderRadius: 3,
-    backgroundColor: '#555',
+    borderRadius: 5,
+    backgroundColor: '#777',
   },
   assistantPanel: {
     borderTopWidth: 1,
     borderTopColor: '#333',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    margin: 0,
+    marginTop: -16,
+    paddingTop: 16,
   },
   assistantHeader: {
     flexDirection: 'row',
@@ -2059,6 +2164,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
   },
   panelTitle: {
     ...FONTS.h4,
@@ -2077,9 +2184,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 0,
     paddingVertical: 0,
-    borderRadius: 0,
-    marginHorizontal: 8,
-    marginBottom: 8,
+    borderRadius: 24,
+    marginHorizontal: 12,
+    marginBottom: 12,
+    marginTop: 8,
   },
   assistantInput: {
     flex: 1,
@@ -2095,12 +2203,17 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   sendButton: {
-    width: 44,
-    height: 44,
-    backgroundColor: '#3f51b5',
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    backgroundColor: '#4a5af8',
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 3,
   },
   sendButtonDisabled: {
     backgroundColor: '#555',
@@ -2113,9 +2226,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#252526',
     borderTopWidth: 1,
     borderTopColor: '#444',
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    margin: 0,
+    marginHorizontal: 0,
   },
   outputHeader: {
     flexDirection: 'row',
@@ -2131,30 +2250,48 @@ const styles = StyleSheet.create({
   outputContent: {
     flex: 1,
     padding: 16,
+    paddingBottom: 24,
   },
   outputText: {
     ...FONTS.body4,
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
-    lineHeight: 20,
+    lineHeight: 22,
+    fontSize: 14,
   },
   errorText: {
     color: '#f44336',
   },
   chatMessage: {
-    padding: 12,
-    borderRadius: 18,
-    marginVertical: 5,
-    maxWidth: '80%',
+    padding: 16,
+    borderRadius: 20,
+    marginVertical: 8,
+    maxWidth: '85%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
+    marginHorizontal: 8,
   },
   userMessage: {
-    backgroundColor: '#0b57d0',
+    backgroundColor: '#4a5af8',
     alignSelf: I18nManager.isRTL ? 'flex-start' : 'flex-end',
     marginLeft: 40,
+    borderBottomRightRadius: I18nManager.isRTL ? 20 : 4,
+    borderBottomLeftRadius: I18nManager.isRTL ? 4 : 20,
+    shadowColor: '#4a5af8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   assistantMessage: {
-    backgroundColor: '#333',
+    backgroundColor: '#2d2d2d',
     alignSelf: I18nManager.isRTL ? 'flex-end' : 'flex-start',
     marginRight: 40,
+    borderBottomRightRadius: I18nManager.isRTL ? 4 : 20,
+    borderBottomLeftRadius: I18nManager.isRTL ? 20 : 4,
+    borderWidth: 0.5,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   systemMessage: {
     backgroundColor: '#2d4b60',
@@ -2177,10 +2314,16 @@ const styles = StyleSheet.create({
   confirmationMessageContainer: {
     backgroundColor: '#324b61',
     padding: 16,
-    borderRadius: 12,
-    marginVertical: 10,
+    borderRadius: 16,
+    marginVertical: 12,
+    marginHorizontal: 8,
     borderWidth: 1,
     borderColor: '#55829b',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   confirmationText: {
     ...FONTS.body4,
@@ -2188,11 +2331,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   codePreviewScroll: {
-    maxHeight: 150,
+    maxHeight: 180,
     backgroundColor: '#1e1e1e',
-    padding: 8,
-    borderRadius: 8,
+    padding: 12,
+    borderRadius: 12,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#444',
   },
   codePreviewText: {
     fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
@@ -2202,19 +2347,25 @@ const styles = StyleSheet.create({
   confirmationButtons: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+    marginTop: 8,
   },
   confirmationButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    minWidth: 100,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    minWidth: 120,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   saveButton: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: '#38a169',
   },
   undoButton: {
-    backgroundColor: '#d32f2f',
+    backgroundColor: '#e53e3e',
   },
   confirmationButtonText: {
     color: '#ffffff',
@@ -2223,23 +2374,27 @@ const styles = StyleSheet.create({
   },
   fileBrowserModal: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
   },
   fileBrowserContent: {
-    width: '80%',
+    width: '85%',
     maxWidth: 350,
     height: '100%',
-    borderTopRightRadius: I18nManager.isRTL ? 0 : 16,
-    borderBottomRightRadius: I18nManager.isRTL ? 0 : 16,
-    borderTopLeftRadius: I18nManager.isRTL ? 16 : 0,
-    borderBottomLeftRadius: I18nManager.isRTL ? 16 : 0,
-    elevation: 5,
+    borderTopRightRadius: I18nManager.isRTL ? 0 : 20,
+    borderBottomRightRadius: I18nManager.isRTL ? 0 : 20,
+    borderTopLeftRadius: I18nManager.isRTL ? 20 : 0,
+    borderBottomLeftRadius: I18nManager.isRTL ? 20 : 0,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 5, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
   fileBrowserHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },
@@ -2251,16 +2406,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 16,
   },
   fileControlButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 8,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     flex: 0.48,
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
   },
   fileControlButtonText: {
     color: '#fff',
@@ -2275,22 +2435,33 @@ const styles = StyleSheet.create({
   fileItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 4,
+    padding: 16,
+    borderRadius: 14,
+    marginBottom: 8,
+    marginHorizontal: 4,
   },
   selectedFileItem: {
     backgroundColor: '#37373d',
     borderWidth: 1,
-    borderColor: '#0e639c',
+    borderColor: '#4a5af8',
+    shadowColor: '#4a5af8',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   fileIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 6,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 2,
   },
   fileItemContent: {
     flex: 1,
@@ -2326,23 +2497,27 @@ const styles = StyleSheet.create({
   },
   settingsModal: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   settingsContent: {
-    width: '80%',
+    width: '90%',
     maxWidth: 400,
-    borderRadius: 12,
+    borderRadius: 20,
     backgroundColor: '#252526',
-    paddingBottom: 20,
-    elevation: 5,
+    paddingBottom: 24,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   settingsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },
@@ -2360,8 +2535,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 18,
     borderBottomWidth: 1,
     borderBottomColor: '#444',
   },
@@ -2373,16 +2548,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   themeButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 4,
-    marginLeft: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 12,
+    marginLeft: 10,
     borderWidth: 1,
     borderColor: '#555',
   },
   activeThemeButton: {
-    backgroundColor: '#0e639c',
-    borderColor: '#0e639c',
+    backgroundColor: '#4a5af8',
+    borderColor: '#4a5af8',
   },
   themeButtonText: {
     color: '#e0e0e0',
@@ -2424,11 +2599,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-end',
-    backgroundColor: '#0e639c',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
+    backgroundColor: '#4a5af8',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 12,
     marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   copyCodeButtonText: {
     color: '#fff',
@@ -2437,12 +2617,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   settingsActionButton: {
-    padding: 12,
-    borderRadius: 8,
-    minWidth: 72,
+    padding: 16,
+    borderRadius: 14,
+    minWidth: 85,
     alignItems: 'center',
     backgroundColor: '#333',
-    margin: 4,
+    margin: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2,
   },
   settingsActionButtonText: {
     color: '#e0e0e0',
